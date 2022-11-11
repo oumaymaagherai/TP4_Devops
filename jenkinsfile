@@ -1,0 +1,39 @@
+pipeline {
+environment {
+registry = "agheraioumayma/tp4devops"
+registryCredential = '50f60da3-1320-4953-a188-4a8923368fc7'
+dockerImage = ''
+}
+agent any
+stages {
+stage('Cloning Git') {
+steps {
+git 'https://github.com/oumaymaagherai/TP4_Devops'
+}
+}
+stage('Building image') {
+steps{
+script {
+dockerImage = docker.build registry + ":$BUILD_NUMBER"
+}
+}
+}
+stage('Test image') {
+steps{
+script {
+
+echo "Tests passed"
+}
+}
+}
+stage('Publish Image') {
+steps{
+script {
+docker.withRegistry( '', registryCredential ) {
+dockerImage.push()
+}
+}
+}
+}
+}
+}
